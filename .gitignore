@@ -1,0 +1,12 @@
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
+
+.idea
+.vscode
+
+cmake-build-debug
+cmake-build
+build
+target
+
