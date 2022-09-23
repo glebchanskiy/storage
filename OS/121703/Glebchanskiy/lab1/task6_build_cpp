@@ -27,7 +27,8 @@ else
 	remove_after=0 # true
 fi
 
-gcc $target -lstdc++ -o $output
+# gcc $target -lstdc++ -o $output
+gcc $target -o $output
 
 if [[ $? -eq 0 ]];then
 	./$output

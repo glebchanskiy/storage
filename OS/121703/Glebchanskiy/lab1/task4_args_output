@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo $@
-echo $@ > "$0.txt"
+echo "$@"
+echo "$@" > "$0.txt"
