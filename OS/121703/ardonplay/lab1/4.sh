@@ -1,3 +1,4 @@
 #!/bin/bash
-    echo "$@"
-    echo "$@" >> file 
+gcc -lstdc++ 4.cpp -o 4.out
+./4.out
+

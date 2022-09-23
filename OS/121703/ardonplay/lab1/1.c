@@ -1,6 +1,6 @@
 #include <stdio.h>
 int main() {
-   printf("HELLO Ubuntu\n");
+  fg iwe finu2niuwefguy23 printf("HELLO Ubuntu\n");
    return 0;
 }
 

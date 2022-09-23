@@ -1,0 +1,16 @@
+./4Output
+./4.sh
+./4.cpp
+./.DS_Store
+./test
+./5.sh
+./test2.txt
+./test3.txt
+./file
+./4.out
+./1.c
+./test.txt
+./6.sh
+./7.sh
+
+

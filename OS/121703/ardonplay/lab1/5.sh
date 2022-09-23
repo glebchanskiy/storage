@@ -1,5 +1,7 @@
 #!/bin/bash
-for file in `find $2 -type f -iname "*$3"`
-do
-	echo $file;
-done > $1
+if  ! $3 
+then
+        echo `find $2 -type f ! -name "*.*"` >> $1
+else                                           
+         echo `find $2 -type f ! -name "*$3"` >> $1
+fi
