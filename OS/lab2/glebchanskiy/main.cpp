@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -18,33 +19,31 @@ vector<fs::directory_entry> getEntry(string dir) {
   return entry_dirs;
 }
 
-void loop(string path, int s) {
-  vector<fs::directory_entry> list;
-  list = getEntry(path);
+bool search(string path) {
 
-  for (const auto &i : list) {
-    for (int i = 0; i<s; i++) 
-      cout << " ";
-
-    cout << i.path().filename();
-
-
-
-    if (i.is_directory()) {
-      cout << ":" << endl;
-      loop(i.path(), s+2);
-    } 
-    else {
-      cout << endl;
-    }
-
-  }
+  return 0;
 }
 
 int main(int argc, char *argv[]) { 
- 
 
-  loop(argv[1], 0);
+  char* line = "lol";
+  vector<fs::directory_entry> file_list = getEntry(argv[1]);
+  
+  for (const auto &entry : file_list) {
+    if (!entry.is_directory()) {
+      pid_t pid = fork();
+      if (pid == 0) {
+        cout << "pid: " << getpid() << ", ";
+        cout << "filename: " << entry.path().filename() << ", ";
 
+        ifstream file(entry.path(), fstream::in | ios::binary);
+
+        cout << "bytes viewed: " << ", ";
+        cout << "search status: " << search(entry.path()) << endl;
+        return 0;
+      }
+    }
+  }
+  // pid_t wait(-1);
   return 0;
 }
