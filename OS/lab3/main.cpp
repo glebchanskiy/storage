@@ -1,95 +1,57 @@
-#include <pthread.h>
-#include <cstdlib>
-#include <cstdio>
-#include <ctime>
+#include <semaphore.h>
+#include <stdlib.h>
 #include <unistd.h>
-#define Sleep(X) sleep(X)
 
-#define PHT_SIZE 5
+#include <ctime>
+#include <iostream>
+#include <string>
+#include <vector>
 
-typedef struct philosopher_tag {
-  char *name;
-  unsigned left_fork;
-  unsigned right_fork;
-} philosopher_t;
+#include "Philosopher.h"
 
-typedef struct table_tag {
-  pthread_mutex_t forks[PHT_SIZE];
-} table_t;
+void init(Philosopher *ph, sem_t *forks) {
+  ph->say("has come");
+  int count = 0;
+  while (count < 10) {
+    ph->say("I want to eat");
+    ph->takeForks(forks);
+    ph->say("I take two forks and start eating!");
+    ph->eat();
+    ph->putForks(forks);
+    ph->say("I put the forks back down and start thinking");
+    ph->think();
 
-typedef struct philosopher_args_tag {
-  philosopher_t *philosopher;
-  table_t *table;
-} philosopher_args_t;
-
-pthread_mutex_t entry_point = PTHREAD_MUTEX_INITIALIZER;
-
-void init_philosopher(philosopher_t *philosopher,
-                       char *name,
-                      unsigned left_fork,
-                      unsigned right_fork) {
-  philosopher->name = name;
-  philosopher->left_fork = left_fork;
-  philosopher->right_fork = right_fork;
-}
-
-void init_table(table_t *table) {
-  size_t i;
-  for (i = 0; i < PHT_SIZE; i++) {
-    pthread_mutex_init(&table->forks[i], nullptr);
+    count++;
   }
-}
-
-[[noreturn]] void* eat(void *args) {
-  auto *arg = (philosopher_args_t*) args;
-  philosopher_t *philosopher = arg->philosopher;
-  table_t *table = arg->table;
-
-  do {
-    printf("%s started dinner\n", philosopher->name);
-
-    pthread_mutex_lock(&entry_point);
-    pthread_mutex_lock(&table->forks[philosopher->left_fork]);
-    srand(time(nullptr));
-    unsigned int randomise = rand() % 100;
-    Sleep(randomise);
-    pthread_mutex_lock(&table->forks[philosopher->right_fork]);
-    pthread_mutex_unlock(&entry_point);
-
-    printf("%s is eating after %d ms sleep\n", philosopher->name, randomise);
-
-    pthread_mutex_unlock(&table->forks[philosopher->right_fork]);
-    pthread_mutex_unlock(&table->forks[philosopher->left_fork]);
-
-    printf("%s finished dinner\n", philosopher->name);
-  } while (1);
 }
 
 int main() {
-  pthread_t threads[PHT_SIZE];
-  philosopher_t philosophers[PHT_SIZE];
-  philosopher_args_t arguments[PHT_SIZE];
-  table_t table;
-  size_t i;
+  pid_t pid;
+  int status = 0;
 
-  init_table(&table);
+  std::vector<Philosopher *> list;
 
-  init_philosopher(&philosophers[0], "Alice", 0, 1);
-  init_philosopher(&philosophers[1], "Bob",   1, 2);
-  init_philosopher(&philosophers[2], "Clark", 2, 3);
-  init_philosopher(&philosophers[3], "Denis", 3, 4);
-  init_philosopher(&philosophers[4], "Eugin", 4, 0);
+  list.push_back(new Philosopher("Saruman"));
+  list.push_back(new Philosopher("Gandalf"));
+  list.push_back(new Philosopher("Radagast"));
+  list.push_back(new Philosopher("Alatar"));
+  list.push_back(new Philosopher("Pallando"));
 
-  for (i = 0; i < PHT_SIZE; i++) {
-    arguments[i].philosopher = &philosophers[i];
-    arguments[i].table = &table;
+  for (auto &ph : list) {
+    pid = fork();
+
+    sem_t *forks = sem_open("/forks", O_CREAT, 0600, 0);
+
+    if (pid == 0) {
+      init(ph, forks);
+      return 0;
+    } else {
+      sem_post(forks);
+    }
+
+    int time = rand() % 3;
+    sleep(time);
   }
 
-  for (i = 0; i < PHT_SIZE; i++) {
-    pthread_create(&threads[i], nullptr, eat, &arguments[i]);
-  }
-
-  for (i = 0; i < PHT_SIZE; i++) {
-    pthread_join(threads[i], nullptr);
-  }
+  waitpid(pid, nullptr, 0);
 }
