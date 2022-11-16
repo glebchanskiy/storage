@@ -1,11 +1,13 @@
-#include <semaphore.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-#include <ctime>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <semaphore.h>
+#include <ctime>
 
 #include "Philosopher.h"
 
