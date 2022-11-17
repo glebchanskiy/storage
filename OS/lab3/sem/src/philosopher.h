@@ -1,7 +1,11 @@
-#include <string>
-#include <iostream>
-#include <unistd.h>
+#ifndef PHILOSOPHER_H
+#define PHILOSOPHER_H
+
 #include <semaphore.h>
+#include <unistd.h>
+
+#include <iostream>
+#include <string>
 
 class Philosopher {
  public:
@@ -16,3 +20,5 @@ class Philosopher {
  private:
   std::string name;
 };
+
+#endif

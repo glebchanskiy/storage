@@ -3,17 +3,16 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <semaphore.h>
 
 #include <iostream>
 #include <string>
-#include <thread>
 #include <vector>
 
-#include "fork.h"
 #include "philosopher.h"
 
 void addPhilosopher(const std::string& name);
 
-void startDinner(time_t dinningTime, int forksCount);
+void startDinner();
 
 #endif

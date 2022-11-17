@@ -1,4 +1,4 @@
-#include "Philosopher.h"
+#include "philosopher.h"
 
 void Philosopher::say(std::string message) {
   std::cout << this->name << ": " << message << std::endl;
