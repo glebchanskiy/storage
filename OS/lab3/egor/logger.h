@@ -1,5 +1,7 @@
 #include "signal.h"
 #include "point.h"
+#include <string>
+#include <fstream>
 
 class Logger {
  public:
@@ -11,12 +13,13 @@ class Logger {
 
  private:
   void startLogs() {
+    std::ofstream f("/Users/glebchanskiy/main/storage/OS/lab3/egor/log", std::ios::app);
     while (true) { //true !queue.empty()
       if (!queue.empty()) {
         q.lock();
         s.lock();
 
-        std::cout << "[logger data]  [" << queue.front()->x << "] : [" << queue.front()->y << "]" << std::endl;
+        f << "[logger data]  [" << queue.front()->x << "] : [" << queue.front()->y << "]" << std::endl;
         signals.push(std::make_pair(Signal::RECORDED, queue.front()->y));
         queue.pop();
 
@@ -24,6 +27,7 @@ class Logger {
         s.unlock();
       }
     }
+    f.close();
   }
 
   std::queue<std::pair<Signal, double> > &signals;

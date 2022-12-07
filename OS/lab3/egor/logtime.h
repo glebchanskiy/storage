@@ -1,6 +1,8 @@
 #include <queue>
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include <string>
 
 #include "signal.h"
 
@@ -10,15 +12,17 @@ class LogTime {
 
  private:
   void startWrite() {
+    std::ofstream f("/Users/glebchanskiy/main/storage/OS/lab3/egor/logtime", std::ios::app);
     while (true) { // true !signals.empty()
       if (!signals.empty()) {
         s.lock();
    
-        std::cout << "[logger time]  [" << (signals.back().first == 0 ? "RECIEVED" : "RECORDED") << "] -> " << signals.back().second << " |  time:" << std::time(nullptr) << std::endl;
+        f << "[logger time]  [" << (signals.back().first == Signal::RECEIVED ? "RECIEVED" : "RECORDED") << "] -> " << signals.back().second << " |  time:" << std::time(nullptr) << std::endl;
         signals.pop();
         s.unlock();
       }
     }
+    f.close();
   }
   
   std::mutex &s;

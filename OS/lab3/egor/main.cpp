@@ -19,15 +19,14 @@ static std::queue<std::pair<Signal, double> > signals;
 static std::mutex s, q;
 
 int main() {
-  // Solver solver(-5, 5, funct1, queue, q, s, signals);
 
-  // Logger logger(queue, q, s, signals);
 
-  // LogTime time(signals, s);
-
-  std::thread t1([]() { Solver solver(-5, 5, funct1, queue, q, s, signals); });
+  std::thread t1([]() { Solver solver(-5, 5, funct5, queue, q, s, signals); });
   std::thread t2([]() { Logger logger(queue, q, s, signals); });
   std::thread t3([]() { LogTime time(signals, s); });
 
-  sleep(10);
+  t1.join();
+  // дописать синхр конца программы 
+  t2.detach();
+  t3.detach();
 }
